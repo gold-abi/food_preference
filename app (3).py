@@ -22,18 +22,23 @@ label_encoders = joblib.load("label_encoders.pkl")
 # App title
 st.title("Health Behavior Cluster Predictor")
 
-# Input fields
 sleep_hours = st.slider("Average Sleep Hours per Day", 0.0, 12.0, 7.0, step=0.5)
 healthy_rating = st.slider("How healthy is your food (1-10)", 1, 10, 7)
-outside_freq = st.selectbox("How often do you eat food outside?",
-                            ["High","Low","Medium"])
+outside_freq = st.selectbox("How often do you eat food outside?", 
+                            ["Always", "Often", "Sometimes", "Rarely", "Never"])
+
+food_pref = st.selectbox("Food Preference", 
+                         ["Vegetarian", "Non-Vegetarian"])
+
 water_liters = st.slider("Liters of Water Consumed Daily", 0.0, 5.0, 2.0, step=0.1)
-food_pref = st.selectbox("Food Preference", ["Veg", "Non-Veg"])
+
 
 # Encode categorical inputs
-outside_freq_encoded = label_encoders["OutsideFoodFreq"].transform([outside_freq])[0]
-food_pref_encoded = label_encoders["FoodPreference"].transform([food_pref])[0]
+outside_freq = st.selectbox("How often do you eat food outside?", 
+                            label_encoders["OutsideFoodFreq"].classes_)
 
+food_pref = st.selectbox("Food Preference", 
+                         label_encoders["FoodPreference"].classes_)
 # Create input vector
 input_data = np.array([[sleep_hours, healthy_rating, outside_freq_encoded, water_liters, food_pref_encoded]])
 
