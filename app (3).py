@@ -47,9 +47,9 @@ input_scaled = scaler.transform(input_data)
 if st.button("Predict Health Cluster"):
     cluster = kmeans.predict(input_scaled)[0]
     cluster_labels = {
-        0: "Healthy Eater",
+        0: "Junk Food Eater",
         1: "Moderate Eater",
-        2: "Junk Food Eater"
+        2: "Healthy Eater"
     }
     label = cluster_labels.get(cluster, f"Unknown Cluster {cluster}")
     st.success(f"You are classified as a **{label}**")
