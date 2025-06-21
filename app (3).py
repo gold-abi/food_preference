@@ -13,47 +13,43 @@ import streamlit as st
 import joblib
 import numpy as np
 
-# Load saved models
+# Load models
 kmeans = joblib.load("model.pkl")
 scaler = joblib.load("scaler.pkl")
 label_encoders = joblib.load("label_encoders.pkl")
 
-
-# App title
 st.title("Health Behavior Cluster Predictor")
 
+# Input fields
 sleep_hours = st.slider("Average Sleep Hours per Day", 0.0, 12.0, 7.0, step=0.5)
 healthy_rating = st.slider("How healthy is your food (1-10)", 1, 10, 7)
 outside_freq = st.selectbox("How often do you eat food outside?", 
-                            ["Always", "Often", "Sometimes", "Rarely", "Never"])
-
-food_pref = st.selectbox("Food Preference", 
-                         ["Vegetarian", "Non-Vegetarian"])
-
-water_liters = st.slider("Liters of Water Consumed Daily", 0.0, 5.0, 2.0, step=0.1)
-
-
-# Encode categorical inputs
-outside_freq = st.selectbox("How often do you eat food outside?", 
                             label_encoders["OutsideFoodFreq"].classes_)
-
 food_pref = st.selectbox("Food Preference", 
                          label_encoders["FoodPreference"].classes_)
-# Create input vector
-input_data = np.array([[sleep_hours, healthy_rating, outside_freq, water_liters, food_pref]])
+water_liters = st.slider("Liters of Water Consumed Daily", 0.0, 5.0, 2.0, step=0.1)
 
-# Scale the input
+# ✅ Encode the categorical inputs
+try:
+    outside_freq_encoded = label_encoders["OutsideFoodFreq"].transform([outside_freq])[0]
+    food_pref_encoded = label_encoders["FoodPreference"].transform([food_pref])[0]
+except ValueError as e:
+    st.error(f"Encoding error: {e}")
+    st.stop()
+
+# ✅ Create input vector (numeric only)
+input_data = np.array([[sleep_hours, healthy_rating, outside_freq_encoded, water_liters, food_pref_encoded]])
+
+# ✅ Scale the input
 input_scaled = scaler.transform(input_data)
 
+# ✅ Predict and map cluster label
 if st.button("Predict Health Cluster"):
     cluster = kmeans.predict(input_scaled)[0]
-
-    # Map cluster index to readable labels
     cluster_labels = {
         0: "Healthy Eater",
         1: "Moderate Eater",
         2: "Junk Food Eater"
     }
-
-    label = cluster_labels.get(cluster, "Unknown Group")
+    label = cluster_labels.get(cluster, f"Unknown Cluster {cluster}")
     st.success(f"You are classified as a **{label}**")
