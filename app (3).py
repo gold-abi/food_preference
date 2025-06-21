@@ -40,7 +40,15 @@ input_data = np.array([[sleep_hours, healthy_rating, outside_freq_encoded, water
 # Scale the input
 input_scaled = scaler.transform(input_data)
 
-# Predict the cluster
 if st.button("Predict Health Cluster"):
     cluster = kmeans.predict(input_scaled)[0]
-    st.success(f"You belong to Cluster #{cluster}")
+
+    # Map cluster index to readable labels
+    cluster_labels = {
+        0: "Healthy Eater",
+        1: "Moderate Eater",
+        2: "Junk Food Eater"
+    }
+
+    label = cluster_labels.get(cluster, "Unknown Group")
+    st.success(f"You are classified as a **{label}**")
