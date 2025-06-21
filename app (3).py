@@ -14,9 +14,10 @@ import joblib
 import numpy as np
 
 # Load saved models
-kmeans = joblib.load("/content/model.pkl")
-scaler = joblib.load("/content/scaler.pkl")
-label_encoders = joblib.load("/content/label_encoders.pkl")
+kmeans = joblib.load("model.pkl")
+scaler = joblib.load("scaler.pkl")
+label_encoders = joblib.load("label_encoders.pkl")
+
 
 # App title
 st.title("Health Behavior Cluster Predictor")
