@@ -40,7 +40,7 @@ outside_freq = st.selectbox("How often do you eat food outside?",
 food_pref = st.selectbox("Food Preference", 
                          label_encoders["FoodPreference"].classes_)
 # Create input vector
-input_data = np.array([[sleep_hours, healthy_rating, outside_freq_encoded, water_liters, food_pref_encoded]])
+input_data = np.array([[sleep_hours, healthy_rating, outside_freq, water_liters, food_pref]])
 
 # Scale the input
 input_scaled = scaler.transform(input_data)
